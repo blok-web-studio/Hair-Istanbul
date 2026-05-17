@@ -838,6 +838,20 @@
     100% { transform: translateX(-50%); }
   }
 
+  @keyframes scrollReviewsRTL {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(50%); }
+  }
+
+  [dir="rtl"] .reviews-scroll {
+    mask-image: linear-gradient(to left, transparent 0%, black 8%, black 92%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to left, transparent 0%, black 8%, black 92%, transparent 100%);
+  }
+
+  [dir="rtl"] .reviews-track {
+    animation: scrollReviewsRTL 40s linear infinite;
+  }
+
   .review-card {
     background: var(--bg-2);
     border: 1px solid var(--border);
@@ -990,7 +1004,7 @@
 </nav>
 
 <section class="hero">
-  <p class="hero-eyebrow" data-i18n="hero.eyebrow">Turkish team, Morocco based.</p>
+  <p class="hero-eyebrow" data-i18n="hero.eyebrow">Turkish team, based in Morocco.</p>
   <h1 data-i18n="hero.title">Premium Hair Transplant<br>in <em>Morocco</em></h1>
   <p data-i18n="hero.subtitle">A fully Turkish professional team delivering world-class results for our patients.</p>
   <div class="hero-cta">
@@ -1090,8 +1104,8 @@
 
 <section id="booking">
   <div class="container" style="text-align:center;">
-    <p class="section-label" data-i18n="booking.sectionLabel">Appointments</p>
-    <h2 data-i18n="booking.title">Book Your Consultation</h2>
+    <p class="section-label" data-i18n="booking.sectionLabel">Contact</p>
+    <h2 data-i18n="booking.title">Chat with us on WhatsApp for more info</h2>
     <p style="color:var(--muted); max-width:400px; margin: 0 auto;" data-i18n="booking.subtitle">Fill in your details and our team will reach out within 3 hours.</p>
     <div class="booking-inner">
       <div class="booking-grid">
@@ -1173,7 +1187,7 @@ const translations = {
       bookNow: "Book Now"
     },
     hero: {
-      eyebrow: "Turkish team, Morocco based.",
+      eyebrow: "Turkish team, based in Morocco.",
       title: "Premium Hair Transplant<br>in <em>Morocco</em>",
       subtitle: "A fully Turkish professional team delivering world-class results for our patients.",
       getConsultation: "Get Consultation",
@@ -1197,11 +1211,11 @@ const translations = {
       title: "Advanced Hair Transplant Techniques",
       safir: {
         title: "Safir Technique",
-        description: "Utilizing the latest Sapphire FUE method for precise, minimally invasive hair follicle extraction, ensuring maximum graft survival and natural results."
+        description: "Utilizing the latest Sapphire method for precise, minimally invasive hair follicle extraction, ensuring maximum graft survival and natural results."
       },
       team: {
         title: "Fully Professional Turkish Team",
-        description: "Our expert Turkish medical professionals bring years of specialized experience in hair restoration, combining traditional techniques with modern innovations."
+        description: "Our expert Turkish medical professionals bring years of specialized experience in hair restoration, combining Turkish expertise with modern innovations."
       },
       anesthesia: {
         title: "Painless Local Anesthesia",
@@ -1224,8 +1238,8 @@ const translations = {
       followUs: "Follow on Instagram"
     },
     booking: {
-      sectionLabel: "Appointments",
-      title: "Book Your Consultation",
+      sectionLabel: "Contact",
+      title: "Chat with us on WhatsApp for more info",
       subtitle: "Fill in your details and our team will reach out within 3 hours."
     },
     form: {
@@ -1283,11 +1297,11 @@ const translations = {
       title: "تقنيات زراعة الشعر المتقدمة",
       safir: {
         title: "تقنية السفير",
-        description: "استخدام طريقة FUE السفير الأحدث لاستخراج بصيلات الشعر الدقيقة والأقل تدخلاً جراحياً، مما يضمن بقاء الحويصلات الأقصى والنتائج الطبيعية."
+        description: "استخدام طريقة السفير الأحدث لاستخراج بصيلات الشعر الدقيقة والأقل تدخلاً جراحياً، مما يضمن بقاء الحويصلات الأقصى والنتائج الطبيعية."
       },
       team: {
         title: "فريق تركي محترف بالكامل",
-        description: "أطباؤنا الأتراك الخبراء يجلبون سنوات من الخبرة المتخصصة في استعادة الشعر، مجمعين بين التقنيات التقليدية والابتكارات الحديثة."
+        description: "أطباؤنا الأتراك الخبراء يجلبون سنوات من الخبرة المتخصصة في استعادة الشعر، مجمعين بين الخبرة التركية والابتكارات الحديثة."
       },
       anesthesia: {
         title: "تخدير موضعي بدون ألم",
@@ -1310,8 +1324,8 @@ const translations = {
       followUs: "تابعنا على إنستغرام"
     },
     booking: {
-      sectionLabel: "المواعيد",
-      title: "احجز استشارتك",
+      sectionLabel: "تواصل معنا",
+      title: "تحدث معنا على واتساب للمزيد من المعلومات",
       subtitle: "املأ تفاصيلك وفريقنا سيتصل بك خلال 3 ساعات."
     },
     form: {
@@ -1348,7 +1362,7 @@ const translations = {
       eyebrow: "Équipe turque, basée au Maroc.",
       title: "Greffe de cheveux premium<br>au <em>Maroc</em>",
       subtitle: "Une équipe professionnelle turque complète offrant des résultats de classe mondiale pour nos patients.",
-      getConsultation: "Obtenir une consultation",
+      getConsultation: "Obtenez une consultation",
       learnMore: "En savoir plus"
     },
     stats: {
@@ -1369,11 +1383,11 @@ const translations = {
       title: "Techniques avancées de greffe de cheveux",
       safir: {
         title: "Technique Safir",
-        description: "Utilisation de la dernière méthode FUE au saphir pour l'extraction précise et minimale invasive des follicules pileux, assurant une survie maximale des greffons et des résultats naturels."
+        description: "Utilisation de la dernière méthode au saphir pour l'extraction précise et minimale invasive des follicules pileux, assurant une survie maximale des greffons et des résultats naturels."
       },
       team: {
         title: "Équipe turque entièrement professionnelle",
-        description: "Nos professionnels médicaux turcs experts apportent des années d'expérience spécialisée en restauration capillaire, combinant des techniques traditionnelles avec des innovations modernes."
+        description: "Nos professionnels médicaux turcs experts apportent des années d'expérience spécialisée en restauration capillaire, combinant l'expertise turque avec des innovations modernes."
       },
       anesthesia: {
         title: "Anesthésie locale indolore",
@@ -1396,8 +1410,8 @@ const translations = {
       followUs: "Suivez-nous sur Instagram"
     },
     booking: {
-      sectionLabel: "Rendez-vous",
-      title: "Réservez votre consultation",
+      sectionLabel: "Contact",
+      title: "Discutez avec nous sur WhatsApp pour plus d'informations",
       subtitle: "Remplissez vos coordonnées et notre équipe vous contactera dans les 3 heures."
     },
     form: {
@@ -1434,7 +1448,7 @@ const translations = {
       eyebrow: "Türk ekip, Fas merkezli.",
       title: "Premium Saç Ekimi<br><em>Fas'ta</em>",
       subtitle: "Hastalarımız için dünya standartlarında sonuçlar sunan, tamamen profesyonel bir Türk ekibi.",
-      getConsultation: "Danışmanlık Al",
+      getConsultation: "Bize Ulaşın",
       learnMore: "Daha Fazla Bilgi"
     },
     stats: {
@@ -1455,11 +1469,11 @@ const translations = {
       title: "Gelişmiş Saç Ekimi Teknikleri",
       safir: {
         title: "Safir Tekniği",
-        description: "Maksimum greft hayatta kalımı ve doğal sonuçlar sağlamak için hassas, minimum invaziv saç folikülü ekstraksiyonu için en son Safir FUE yöntemini kullanıyoruz."
+        description: "Maksimum greft hayatta kalımı ve doğal sonuçlar sağlamak için hassas, minimum invaziv saç folikülü ekstraksiyonu için en son Safir yöntemini kullanıyoruz."
       },
       team: {
         title: "Tam Profesyonel Türk Ekibi",
-        description: "Uzman Türk tıbbi profesyonellerimiz, geleneksel teknikleri modern yeniliklerle birleştirerek saç restorasyonunda yılların özel deneyimini sunar."
+        description: "Uzman Türk tıbbi profesyonellerimiz, Türk uzmanlığını modern yeniliklerle birleştirerek saç restorasyonunda yılların özel deneyimini sunar."
       },
       anesthesia: {
         title: "Ağrısız Lokal Anestezi",
@@ -1482,8 +1496,8 @@ const translations = {
       followUs: "Instagram'da Takip Et"
     },
     booking: {
-      sectionLabel: "Randevular",
-      title: "Danışmanlığınızı Ayırtın",
+      sectionLabel: "İletişim",
+      title: "Daha fazla bilgi için WhatsApp'ta bizimle sohbet edin",
       subtitle: "Bilgilerinizi doldurun, ekibimiz 3 saat içinde size ulaşacaktır."
     },
     form: {
@@ -1525,6 +1539,13 @@ function detectLanguage() {
 
 let currentLanguage = 'en'; // Default to English, will be updated on load
 
+// XSS protection function
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
 // Language switching function
 function setLanguage(lang) {
   if (!translations[lang]) return;
@@ -1535,11 +1556,13 @@ function setLanguage(lang) {
   // Update HTML lang attribute
   document.documentElement.setAttribute('lang', lang);
   
-  // Add/remove RTL class for Arabic
+  // Add/remove RTL class and dir attribute for Arabic
   if (lang === 'ar') {
     document.body.classList.add('rtl');
+    document.documentElement.setAttribute('dir', 'rtl');
   } else {
     document.body.classList.remove('rtl');
+    document.documentElement.setAttribute('dir', 'ltr');
   }
   
   // Update all elements with data-i18n attributes
@@ -1862,8 +1885,8 @@ function getProcedureList() {
 
 function renderCountryOptions(options = countryList) {
   countryOptionsList.innerHTML = options.map((country) => `
-    <div class="custom-option" role="option" data-value="${country.code}" data-emoji="${country.emoji}" data-label="${country.label}" tabindex="0">
-      <span>${country.emoji} +${country.code}</span>
+    <div class="custom-option" role="option" data-value="${escapeHtml(country.code)}" data-emoji="${escapeHtml(country.emoji)}" data-label="${escapeHtml(country.label)}" tabindex="0">
+      <span>${escapeHtml(country.emoji)} +${escapeHtml(country.code)}</span>
     </div>
   `).join('');
 }
@@ -1966,14 +1989,13 @@ countrySearch.addEventListener('keydown', (event) => {
 });
 
 renderCountryOptions();
-setCountryValue('212', '🇲🇦', 'Morocco');
+setCountryValue('212', '🇲🇦');
 
 // Procedure dropdown functions
-function renderProcedureOptions() {
-  const list = getProcedureList();
+function renderProcedureOptions(list = getProcedureList()) {
   procedureOptionsList.innerHTML = list.map((procedure) => `
-    <div class="custom-option" role="option" data-value="${procedure.value}" tabindex="0">
-      <span>${procedure.label}</span>
+    <div class="custom-option" role="option" data-value="${escapeHtml(procedure.value)}" data-label="${escapeHtml(procedure.label)}" tabindex="0">
+      ${escapeHtml(procedure.label)}
     </div>
   `).join('');
 }
@@ -2086,8 +2108,8 @@ const languageList = [
 
 function renderLanguageOptions() {
   languageOptionsList.innerHTML = languageList.map((language) => `
-    <div class="custom-option" role="option" data-value="${language.value}" tabindex="0">
-      <span>${language.label}</span>
+    <div class="custom-option" role="option" data-value="${escapeHtml(language.value)}" data-label="${escapeHtml(language.label)}" tabindex="0">
+      ${escapeHtml(language.label)}
     </div>
   `).join('');
 }
@@ -2233,8 +2255,8 @@ function updateThemeSelector(value) {
 function renderThemeOptions() {
   const list = getThemeList();
   themeOptionsList.innerHTML = list.map((theme) => `
-    <div class="custom-option" role="option" data-value="${theme.value}" tabindex="0">
-      <span>${theme.label}</span>
+    <div class="custom-option" role="option" data-value="${escapeHtml(theme.value)}" data-label="${escapeHtml(theme.label)}" tabindex="0">
+      ${escapeHtml(theme.label)}
     </div>
   `).join('');
 }
@@ -2565,15 +2587,15 @@ function renderReviews() {
     }[review.originalLang];
     
     const translatedLabel = !isOriginalLang ? 
-      `<div class="review-translated-label">${getTranslation('reviews.translatedFrom')} ${originalLangName}</div>` : '';
+      `<div class="review-translated-label">${escapeHtml(getTranslation('reviews.translatedFrom'))} ${escapeHtml(originalLangName)}</div>` : '';
     
     return `
       <div class="review-card pop-out">
         <div class="review-stars">${renderStars(review.stars)}</div>
-        <div class="review-text">"${text}"</div>
+        <div class="review-text">"${escapeHtml(text)}"</div>
         ${translatedLabel}
-        <div class="review-author">${review.author}</div>
-        <div class="review-date">${review.date}</div>
+        <div class="review-author">${escapeHtml(review.author)}</div>
+        <div class="review-date">${escapeHtml(review.date)}</div>
       </div>
     `;
   }).join('');

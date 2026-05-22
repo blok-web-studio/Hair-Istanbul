@@ -39,11 +39,13 @@ function validateCSRFToken(req, res, next) {
   next();
 }
 
+app.use(cookieParser());
+
 app.use((req, res, next) => {
   if (!req.cookies.csrf_token) {
     const token = generateCSRFToken();
     res.cookie('csrf_token', token, {
-      httpOnly: true,
+      httpOnly: false,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
       maxAge: 24 * 60 * 60 * 1000
@@ -59,7 +61,6 @@ app.use(helmet({
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());
 app.use(express.static(path.join(__dirname, '.')));
 
 const apiLimiter = rateLimit({
@@ -75,6 +76,12 @@ const authLimiter = rateLimit({
 });
 
 app.use('/api', apiLimiter);
+
+const bookingLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  max: 5,
+  message: { error: 'Too many booking attempts, please try again later.' }
+});
 
 function authenticateToken(req, res, next) {
   const token = req.cookies.token || req.headers.authorization?.split(' ')[1];
@@ -188,7 +195,60 @@ app.post('/api/visitor', validateCSRFToken, async (req, res) => {
   }
 });
 
-app.post('/api/booking', validateCSRFToken, async (req, res) => {
+function normalizeSpaces(value) {
+  return String(value || '').trim().replace(/\s+/g, ' ');
+}
+
+function phoneDigits(value) {
+  return String(value || '').replace(/\D/g, '').replace(/^0+/, '');
+}
+
+function hasSpamPattern(value) {
+  return /(https?:\/\/|www\.|\.com|\.net|\.org|viagra|casino|crypto|loan|seo|marketing|telegram|whatsapp)/i.test(value)
+    || /(.)\1{5,}/u.test(value.toLowerCase());
+}
+
+function isValidName(value) {
+  const name = normalizeSpaces(value);
+  const nameRegex = /^[\p{L}][\p{L}' -]{1,68}[\p{L}]$/u;
+  const parts = name.split(/[ -]+/).filter(Boolean);
+  return nameRegex.test(name)
+    && parts.length >= 2
+    && parts.length <= 5
+    && parts.every(part => part.length >= 2)
+    && !hasSpamPattern(name);
+}
+
+function isValidCity(value) {
+  const city = normalizeSpaces(value);
+  const cityRegex = /^[\p{L}][\p{L}' .-]{1,58}[\p{L}]$/u;
+  return cityRegex.test(city)
+    && /[\p{L}]{2,}/u.test(city)
+    && !hasSpamPattern(city);
+}
+
+function isValidAge(value) {
+  if (!/^\d{1,3}$/.test(String(value).trim())) return false;
+  const age = Number(value);
+  return Number.isInteger(age) && age >= 19 && age <= 100;
+}
+
+function isValidProcedure(value) {
+  return ['Hair transplant', 'Beard transplant', 'Eyebrows transplant', 'Treatment'].includes(value);
+}
+
+function isValidPhone(phone, countryCode) {
+  const digits = phoneDigits(phone);
+  const fullNumber = `${countryCode}${digits}`;
+  return /^[1-9]\d{7,14}$/.test(fullNumber)
+    && digits.length >= 6
+    && digits.length <= 14
+    && !/^(\d)\1+$/.test(digits)
+    && !/(\d)\1{5,}/.test(digits)
+    && !/(012345|123456|234567|345678|456789|987654|876543|765432|654321)/.test(digits);
+}
+
+app.post('/api/booking', bookingLimiter, validateCSRFToken, async (req, res) => {
   const { name, age, city, procedure, phone, country_code, ip_address } = req.body;
 
   if (!name || !age || !city || !procedure || !phone || !country_code || !ip_address) {
@@ -203,41 +263,37 @@ app.post('/api/booking', validateCSRFToken, async (req, res) => {
     return res.status(400).json({ error: 'Age must be a number.' });
   }
 
-  const ageNum = parseInt(age);
-  if (ageNum < 18 || ageNum > 100) {
-    return res.status(400).json({ error: 'Age must be between 18 and 100.' });
-  }
-
-  if (name.length < 2 || name.length > 100) {
-    return res.status(400).json({ error: 'Name must be between 2 and 100 characters.' });
-  }
-
-  if (city.length < 2 || city.length > 100) {
-    return res.status(400).json({ error: 'City must be between 2 and 100 characters.' });
-  }
-
-  if (phone.length < 10 || phone.length > 20) {
-    return res.status(400).json({ error: 'Phone number must be between 10 and 20 characters.' });
-  }
-
-  if (country_code.length < 1 || country_code.length > 5) {
+  if (!/^[0-9]{1,5}$/.test(country_code.trim())) {
     return res.status(400).json({ error: 'Country code must be between 1 and 5 characters.' });
   }
 
-  if (!/^[0-9]+$/.test(phone)) {
-    return res.status(400).json({ error: 'Phone number must contain only digits.' });
-  }
-
-  if (!/^[0-9]+$/.test(country_code)) {
-    return res.status(400).json({ error: 'Country code must contain only digits.' });
-  }
-
-  const sanitizedName = name.trim();
-  const sanitizedCity = city.trim();
+  const ageNum = Number(age);
+  const sanitizedName = normalizeSpaces(name);
+  const sanitizedCity = normalizeSpaces(city);
   const sanitizedProcedure = procedure.trim();
-  const sanitizedPhone = phone.trim();
+  const sanitizedPhone = phoneDigits(phone);
   const sanitizedCountryCode = country_code.trim();
   const sanitizedIp = ip_address.trim();
+
+  if (!isValidName(sanitizedName)) {
+    return res.status(400).json({ error: 'Please enter a real full name.' });
+  }
+
+  if (!isValidAge(age)) {
+    return res.status(400).json({ error: 'Age must be between 19 and 100.' });
+  }
+
+  if (!isValidCity(sanitizedCity)) {
+    return res.status(400).json({ error: 'Please enter a real city name.' });
+  }
+
+  if (!isValidProcedure(sanitizedProcedure)) {
+    return res.status(400).json({ error: 'Invalid service type.' });
+  }
+
+  if (!isValidPhone(sanitizedPhone, sanitizedCountryCode)) {
+    return res.status(400).json({ error: 'Please enter a real phone number.' });
+  }
 
   const geo = geoip.lookup(sanitizedIp);
   const country = geo?.country || null;

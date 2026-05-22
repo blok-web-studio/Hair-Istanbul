@@ -808,7 +808,22 @@
   .form-group input:focus,
   .form-group select:focus { border-color: rgba(0,123,255,0.5); }
 
+  .form-group input[aria-invalid="true"],
+  .custom-dropdown-trigger[aria-invalid="true"] {
+    border-color: rgba(255, 99, 99, 0.75);
+    box-shadow: 0 0 0 1px rgba(255, 99, 99, 0.18);
+  }
+
   .form-group input::placeholder { color: #444; }
+
+  .bot-field {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+  }
 
   .form-submit {
     width: 100%;
@@ -824,6 +839,16 @@
     margin-top: 1rem;
     font-size: 0.78rem;
     color: #444;
+    min-height: 1.3em;
+    transition: color 0.2s ease;
+  }
+
+  .form-note.is-error {
+    color: rgba(255, 99, 99, 0.92);
+  }
+
+  .form-note.is-ready {
+    color: var(--gold-light);
   }
 
   /* FOOTER */
@@ -1136,26 +1161,26 @@
 <section id="results" style="padding-top:0;">
   <div class="container">
     <p class="section-label" data-i18n="results.sectionLabel">Gallery</p>
-    <h2 data-i18n="results.title">Patient Gallery</h2>
+    <h2 data-i18n="results.title">Procedure Steps</h2>
     <div class="ba-grid">
       <div class="ba-card pop-out">
-        <img src="Assets/customer-photos/customer-01.png" alt="Customer gallery photo 01">
+        <img src="Assets/customer-photos/customer-01.png" alt="Customer gallery photo before transplant">
         <div class="ba-card-overlay">
-          <span class="ba-num">01</span>
+          <span class="ba-num" data-i18n="results.beforeLabel">Before</span>
           <span data-i18n="results.beforeAfter">Patient Photo</span>
         </div>
       </div>
       <div class="ba-card pop-out">
-        <img src="Assets/customer-photos/customer-02.png" alt="Customer gallery photo 02">
+        <img src="Assets/customer-photos/customer-02.png" alt="Customer gallery photo during transplant">
         <div class="ba-card-overlay">
-          <span class="ba-num">02</span>
+          <span class="ba-num" data-i18n="results.duringLabel">During</span>
           <span data-i18n="results.beforeAfter">Patient Photo</span>
         </div>
       </div>
       <div class="ba-card pop-out">
-        <img src="Assets/customer-photos/customer-03.png" alt="Customer gallery photo 03">
+        <img src="Assets/customer-photos/customer-03.png" alt="Customer gallery photo after transplant">
         <div class="ba-card-overlay">
-          <span class="ba-num">03</span>
+          <span class="ba-num" data-i18n="results.afterLabel">After</span>
           <span data-i18n="results.beforeAfter">Patient Photo</span>
         </div>
       </div>
@@ -1185,17 +1210,17 @@
         <div class="form-row">
           <div class="form-group">
             <label for="name" data-i18n="form.nameLabel">Full Name</label>
-            <input id="name" type="text" data-i18n-placeholder="form.namePlaceholder" placeholder="e.g. John Smith" required>
+            <input id="name" type="text" autocomplete="name" maxlength="70" data-i18n-placeholder="form.namePlaceholder" placeholder="e.g. John Smith" required>
           </div>
           <div class="form-group">
             <label for="age" data-i18n="form.ageLabel">Age</label>
-            <input id="age" type="number" min="19" data-i18n-placeholder="form.agePlaceholder" placeholder="18+" required>
+            <input id="age" type="number" min="19" max="100" inputmode="numeric" data-i18n-placeholder="form.agePlaceholder" placeholder="18+" required>
           </div>
         </div>
 
         <div class="form-group">
           <label for="city" data-i18n="form.cityLabel">City</label>
-          <input id="city" type="text" data-i18n-placeholder="form.cityPlaceholder" placeholder="e.g. Casablanca" required>
+          <input id="city" type="text" autocomplete="address-level2" maxlength="60" data-i18n-placeholder="form.cityPlaceholder" placeholder="e.g. Casablanca" required>
         </div>
 
         <div class="form-group">
@@ -1228,8 +1253,13 @@
               </div>
               <input type="hidden" id="countryCode" value="212">
             </div>
-            <input id="phone" type="tel" data-i18n-placeholder="form.phonePlaceholder" placeholder="6 00 00 00 00" required>
+            <input id="phone" type="tel" autocomplete="tel-national" inputmode="tel" maxlength="20" data-i18n-placeholder="form.phonePlaceholder" placeholder="6 00 00 00 00" required>
           </div>
+        </div>
+
+        <div class="bot-field" aria-hidden="true">
+          <label for="website">Website</label>
+          <input id="website" type="text" tabindex="-1" autocomplete="off">
         </div>
 
         <button id="whatsappBtn" class="btn btn-gold form-submit" disabled>
@@ -1297,8 +1327,11 @@ const translations = {
     },
     results: {
       sectionLabel: "Gallery",
-      title: "Patient Gallery",
-      beforeAfter: "Patient Photo"
+      title: "Procedure Steps",
+      beforeAfter: "Patient Photo",
+      beforeLabel: "Before",
+      duringLabel: "During",
+      afterLabel: "After"
     },
     reviews: {
       sectionLabel: "Testimonials",
@@ -1330,9 +1363,11 @@ const translations = {
       submitButton: "Complete the form to chat",
       note: "Please complete all fields.",
       nameValidation: "Please enter your full name with at least first and last name.",
-      nameError: "Enter a valid name",
-      ageError: "You must be 19 or older to continue.",
-      ageErrorButton: "Age requirement not met",
+      ageRangeError: "Please enter a real age between 19 and 100.",
+      cityError: "Please enter a real city name.",
+      procedureError: "Please select a valid service.",
+      phoneError: "Please enter a real phone number for the selected country code.",
+      spamError: "Please check your details and try again.",
       readyMessage: "All set — click to chat on WhatsApp.",
       readyButton: "Chat on WhatsApp"
     },
@@ -1383,8 +1418,11 @@ const translations = {
     },
     results: {
       sectionLabel: "المعرض",
-      title: "معرض المرضى",
-      beforeAfter: "صورة مريض"
+      title: "خطوات الإجراء",
+      beforeAfter: "صورة مريض",
+      beforeLabel: "قبل",
+      duringLabel: "أثناء",
+      afterLabel: "بعد"
     },
     reviews: {
       sectionLabel: "آراء العملاء",
@@ -1416,9 +1454,11 @@ const translations = {
       submitButton: "أكمل النموذج للدردشة",
       note: "يرجى إكمال جميع الحقول",
       nameValidation: "يرجى إدخال اسمك الكامل مع الاسم الأول والأخير على الأقل.",
-      nameError: "أدخل اسماً صحيحاً",
-      ageError: "يجب أن يكون عمرك 19 عاماً أو أكثر للمتابعة.",
-      ageErrorButton: "متطلبات العمر غير مستوفاة",
+      ageRangeError: "يرجى إدخال عمر حقيقي بين 19 و100.",
+      cityError: "يرجى إدخال اسم مدينة حقيقي.",
+      procedureError: "يرجى اختيار خدمة صحيحة.",
+      phoneError: "يرجى إدخال رقم هاتف حقيقي لرمز الدولة المحدد.",
+      spamError: "يرجى التحقق من التفاصيل والمحاولة مرة أخرى.",
       readyMessage: "كل شيء جاهز - انقر للدردشة على واتساب.",
       readyButton: "الدردشة على واتساب"
     },
@@ -1469,8 +1509,11 @@ const translations = {
     },
     results: {
       sectionLabel: "Galerie",
-      title: "Galerie des patients",
-      beforeAfter: "Photo du patient"
+      title: "Étapes de la procédure",
+      beforeAfter: "Photo du patient",
+      beforeLabel: "Avant",
+      duringLabel: "Pendant",
+      afterLabel: "Après"
     },
     reviews: {
       sectionLabel: "Témoignages",
@@ -1502,9 +1545,11 @@ const translations = {
       submitButton: "Complétez le formulaire pour discuter",
       note: "Veuillez remplir tous les champs.",
       nameValidation: "Veuillez saisir votre nom complet avec au moins le prénom et le nom de famille.",
-      nameError: "Entrez un nom valide",
-      ageError: "Vous devez avoir 19 ans ou plus pour continuer.",
-      ageErrorButton: "Exigence d'âge non remplie",
+      ageRangeError: "Veuillez entrer un âge réel entre 19 et 100.",
+      cityError: "Veuillez entrer un vrai nom de ville.",
+      procedureError: "Veuillez sélectionner un service valide.",
+      phoneError: "Veuillez entrer un vrai numéro pour l'indicatif sélectionné.",
+      spamError: "Veuillez vérifier vos informations et réessayer.",
       readyMessage: "Tout est prêt - cliquez pour discuter sur WhatsApp.",
       readyButton: "Discuter sur WhatsApp"
     },
@@ -1555,8 +1600,11 @@ const translations = {
     },
     results: {
       sectionLabel: "Galeri",
-      title: "Hasta Galerisi",
-      beforeAfter: "Hasta Fotoğrafı"
+      title: "Prosedür Adımları",
+      beforeAfter: "Hasta Fotoğrafı",
+      beforeLabel: "Öncesi",
+      duringLabel: "Sırasında",
+      afterLabel: "Sonrası"
     },
     reviews: {
       sectionLabel: "Yorumlar",
@@ -1588,9 +1636,11 @@ const translations = {
       submitButton: "Sohbet için formu tamamlayın",
       note: "Lütfen tüm alanları doldurun.",
       nameValidation: "Lütfen en az adı ve soyadı içeren tam adınızı girin.",
-      nameError: "Geçerli bir isim girin",
-      ageError: "Devam etmek için 19 yaşında veya daha büyük olmalısınız.",
-      ageErrorButton: "Yaş koşulu sağlanmadı",
+      ageRangeError: "Lütfen 19 ile 100 arasında gerçek bir yaş girin.",
+      cityError: "Lütfen gerçek bir şehir adı girin.",
+      procedureError: "Lütfen geçerli bir hizmet seçin.",
+      phoneError: "Lütfen seçilen ülke kodu için gerçek bir telefon numarası girin.",
+      spamError: "Lütfen bilgilerinizi kontrol edip tekrar deneyin.",
       readyMessage: "Her şey hazır — WhatsApp'ta sohbet etmek için tıklayın.",
       readyButton: "WhatsApp'ta Sohbet Et"
     },
@@ -1617,6 +1667,20 @@ function escapeHtml(text) {
   const div = document.createElement('div');
   div.textContent = text;
   return div.innerHTML;
+}
+
+function getCookie(name) {
+  return document.cookie
+    .split('; ')
+    .find((row) => row.startsWith(`${name}=`))
+    ?.split('=')[1] || '';
+}
+
+function getApiHeaders() {
+  return {
+    'Content-Type': 'application/json',
+    'X-CSRF-Token': decodeURIComponent(getCookie('csrf_token')),
+  };
 }
 
 // Language switching function
@@ -1672,6 +1736,7 @@ function setLanguage(lang) {
   // Clear procedure selection on language change to prevent mismatch
   document.getElementById('procedure').value = '';
   procedureValue.textContent = getTranslation('form.procedurePlaceholder');
+  validateForm();
 }
 
 // Get translation by key path
@@ -1715,6 +1780,9 @@ const formFields = [
   document.getElementById('countryCode'),
 ];
 const formNote = document.getElementById('formNote');
+const websiteField = document.getElementById('website');
+const formLoadedAt = Date.now();
+const minimumHumanSubmitMs = 2500;
 
 const countryList = [
   { code: '1', emoji: '🇺🇸', label: 'United States' },
@@ -2408,56 +2476,176 @@ if (clinicSlides.length > 0) {
   }, 5200);
 }
 
-function validateForm() {
-  const name = formFields[0].value.trim();
-  const age = Number(formFields[1].value);
-  const city = formFields[2].value.trim();
-  const procedure = formFields[3].value;
-  const phone = formFields[4].value.trim();
+function normalizeSpaces(value) {
+  return value.trim().replace(/\s+/g, ' ');
+}
 
-  const allFilled = name && age && city && procedure && phone;
-  const ageValid = age >= 19;
-  const nameRegex = /^[A-Za-zÀ-ÖØ-öø-ÿ]+(?:[ '\-][A-Za-zÀ-ÖØ-öø-ÿ]+)+$/;
-  const nameValid = nameRegex.test(name);
+function phoneDigits(value) {
+  return value.replace(/\D/g, '').replace(/^0+/, '');
+}
 
-  if (!allFilled) {
-    formNote.textContent = getTranslation('form.note');
-    whatsappBtnText.textContent = getTranslation('form.submitButton');
-    whatsappBtn.disabled = true;
-    whatsappBtn.classList.remove('loading');
-    return;
-  }
+function hasSpamPattern(value) {
+  const normalized = value.toLowerCase();
+  return /(https?:\/\/|www\.|\.com|\.net|\.org|viagra|casino|crypto|loan|seo|marketing|telegram|whatsapp)/i.test(normalized)
+    || /(.)\1{5,}/u.test(normalized);
+}
 
-  if (!nameValid) {
-    formNote.textContent = getTranslation('form.nameValidation');
-    whatsappBtnText.textContent = getTranslation('form.nameError');
-    whatsappBtn.disabled = true;
-    whatsappBtn.classList.remove('loading');
-    return;
-  }
+function isValidName(value) {
+  const name = normalizeSpaces(value);
+  const nameRegex = /^[\p{L}][\p{L}' -]{1,68}[\p{L}]$/u;
+  const parts = name.split(/[ -]+/).filter(Boolean);
+  return nameRegex.test(name)
+    && parts.length >= 2
+    && parts.length <= 5
+    && parts.every(part => part.length >= 2)
+    && !hasSpamPattern(name);
+}
 
-  if (!ageValid) {
-    formNote.textContent = getTranslation('form.ageError');
-    whatsappBtnText.textContent = getTranslation('form.ageErrorButton');
-    whatsappBtn.disabled = true;
-    whatsappBtn.classList.remove('loading');
-    return;
-  }
+function isValidCity(value) {
+  const city = normalizeSpaces(value);
+  const cityRegex = /^[\p{L}][\p{L}' .-]{1,58}[\p{L}]$/u;
+  return cityRegex.test(city)
+    && /[\p{L}]{2,}/u.test(city)
+    && !hasSpamPattern(city);
+}
 
-  formNote.textContent = getTranslation('form.readyMessage');
-  whatsappBtnText.textContent = getTranslation('form.readyButton');
-  whatsappBtn.disabled = false;
+function isValidAge(value) {
+  if (!/^\d{1,3}$/.test(String(value).trim())) return false;
+  const age = Number(value);
+  return Number.isInteger(age) && age >= 19 && age <= 100;
+}
+
+function isValidProcedure(value) {
+  return procedureLists.en.some((procedure) => procedure.value === value);
+}
+
+function getArabicProcedureLabel(value) {
+  return procedureLists.ar.find((procedure) => procedure.value === value)?.label || value;
+}
+
+function isValidPhone(phone, countryCode) {
+  const digits = phoneDigits(phone);
+  const fullNumber = `${countryCode}${digits}`;
+  return /^[1-9]\d{7,14}$/.test(fullNumber)
+    && digits.length >= 6
+    && digits.length <= 14
+    && !/^(\d)\1+$/.test(digits)
+    && !/(\d)\1{5,}/.test(digits)
+    && !/(012345|123456|234567|345678|456789|987654|876543|765432|654321)/.test(digits);
+}
+
+function setFieldValidity(field, isValid) {
+  if (!field) return;
+  if (field.type === 'hidden') return;
+  field.setAttribute('aria-invalid', isValid ? 'false' : 'true');
+}
+
+function setProcedureValidity(isValid) {
+  procedureDropdownToggle.setAttribute('aria-invalid', isValid ? 'false' : 'true');
+}
+
+function setFormState(messageKey, noteState = 'neutral') {
+  formNote.textContent = getTranslation(messageKey);
+  formNote.classList.toggle('is-error', noteState === 'error');
+  formNote.classList.toggle('is-ready', noteState === 'ready');
+}
+
+function setFormBlocked(messageKey, noteState = 'error') {
+  setFormState(messageKey, noteState);
+  whatsappBtnText.textContent = getTranslation('form.submitButton');
+  whatsappBtn.disabled = true;
   whatsappBtn.classList.remove('loading');
 }
 
-function openWhatsApp() {
-  const name = formFields[0].value.trim();
+function getFormValidation() {
+  const name = normalizeSpaces(formFields[0].value);
   const age = formFields[1].value.trim();
-  const city = formFields[2].value.trim();
+  const city = normalizeSpaces(formFields[2].value);
   const procedure = formFields[3].value;
-  const country = formFields[5].value;
   const phone = formFields[4].value.trim();
-  const message = `Hello! My name is ${name}. I am ${age} years old, from ${city}. I need ${procedure}. My phone number is +${country}${phone}.`;
+  const country = formFields[5].value.trim();
+
+  const fieldsFilled = Boolean(name && age && city && procedure && phone && country);
+  const result = {
+    fieldsFilled,
+    name: isValidName(name),
+    age: isValidAge(age),
+    city: isValidCity(city),
+    procedure: isValidProcedure(procedure),
+    phone: isValidPhone(phone, country),
+    bot: websiteField.value.trim() === '' && Date.now() - formLoadedAt >= minimumHumanSubmitMs,
+  };
+
+  result.valid = fieldsFilled && result.name && result.age && result.city && result.procedure && result.phone && result.bot;
+  return result;
+}
+
+function validateForm() {
+  const validation = getFormValidation();
+  const touched = {
+    name: formFields[0].value.trim() !== '',
+    age: formFields[1].value.trim() !== '',
+    city: formFields[2].value.trim() !== '',
+    procedure: formFields[3].value !== '',
+    phone: formFields[4].value.trim() !== '',
+  };
+
+  setFieldValidity(formFields[0], !touched.name || validation.name);
+  setFieldValidity(formFields[1], !touched.age || validation.age);
+  setFieldValidity(formFields[2], !touched.city || validation.city);
+  setFieldValidity(formFields[4], !touched.phone || validation.phone);
+  setProcedureValidity(!touched.procedure || validation.procedure);
+
+  if (!validation.fieldsFilled) {
+    setFormBlocked('form.note', 'neutral');
+    return false;
+  }
+
+  if (!validation.name) {
+    setFormBlocked('form.nameValidation');
+    return false;
+  }
+
+  if (!validation.age) {
+    setFormBlocked('form.ageRangeError');
+    return false;
+  }
+
+  if (!validation.city) {
+    setFormBlocked('form.cityError');
+    return false;
+  }
+
+  if (!validation.procedure) {
+    setFormBlocked('form.procedureError');
+    return false;
+  }
+
+  if (!validation.phone) {
+    setFormBlocked('form.phoneError');
+    return false;
+  }
+
+  if (!validation.bot) {
+    setFormBlocked('form.spamError');
+    return false;
+  }
+
+  setFormState('form.readyMessage', 'ready');
+  whatsappBtnText.textContent = getTranslation('form.readyButton');
+  whatsappBtn.disabled = false;
+  whatsappBtn.classList.remove('loading');
+  return true;
+}
+
+function openWhatsApp() {
+  const name = normalizeSpaces(formFields[0].value);
+  const age = formFields[1].value.trim();
+  const city = normalizeSpaces(formFields[2].value);
+  const procedure = getArabicProcedureLabel(formFields[3].value);
+  const country = formFields[5].value;
+  const phone = phoneDigits(formFields[4].value);
+  const message = `مرحبا! اسمي ${name}. عمري ${age} سنة، وأنا من ${city}. أحتاج إلى ${procedure}. رقم هاتفي هو +${country}${phone}.`;
   window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`, '_blank');
 }
 
@@ -2465,10 +2653,12 @@ formFields.forEach((field) => {
   field.addEventListener('input', validateForm);
   field.addEventListener('change', validateForm);
 });
+websiteField.addEventListener('input', validateForm);
+setTimeout(validateForm, minimumHumanSubmitMs + 100);
 
 whatsappBtn.addEventListener('click', (event) => {
   event.preventDefault();
-  if (!whatsappBtn.disabled) {
+  if (validateForm()) {
     whatsappBtn.disabled = true;
     whatsappBtnText.textContent = 'Redirecting...';
     whatsappBtn.classList.add('loading');
@@ -2728,7 +2918,7 @@ async function trackVisitor() {
 
     await fetch('/api/visitor', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: getApiHeaders(),
       body: JSON.stringify({
         ip_address: ipAddress,
         user_agent: navigator.userAgent
@@ -2744,12 +2934,17 @@ trackVisitor();
 // Modified booking submission to send to backend
 const originalOpenWhatsApp = openWhatsApp;
 openWhatsApp = async function() {
-  const name = formFields[0].value.trim();
+  if (!getFormValidation().valid) {
+    validateForm();
+    return;
+  }
+
+  const name = normalizeSpaces(formFields[0].value);
   const age = formFields[1].value.trim();
-  const city = formFields[2].value.trim();
+  const city = normalizeSpaces(formFields[2].value);
   const procedure = formFields[3].value;
   const country = formFields[5].value;
-  const phone = formFields[4].value.trim();
+  const phone = phoneDigits(formFields[4].value);
 
   try {
     const response = await fetch('https://api.ipify.org?format=json');
@@ -2758,7 +2953,7 @@ openWhatsApp = async function() {
 
     await fetch('/api/booking', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: getApiHeaders(),
       body: JSON.stringify({
         name,
         age,

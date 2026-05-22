@@ -401,6 +401,27 @@
     border-radius: 2px;
   }
 
+  .clinic-slideshow {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .clinic-slide {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 1.2s ease-in-out;
+  }
+
+  .clinic-slide.active {
+    opacity: 1;
+  }
+
   /* STATS */
   .stats {
     background: var(--bg-2);
@@ -457,7 +478,34 @@
     transition: border-color 0.2s;
   }
 
-  .ba-card:hover { border-color: rgba(0,123,255,0.3); }
+  .ba-card:hover { border-color: rgba(255,255,255,0.35); }
+
+  .ba-card img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .ba-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(0,0,0,0.08), rgba(0,0,0,0.55));
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .ba-card-overlay {
+    position: absolute;
+    inset: 0;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    z-index: 2;
+  }
 
   .ba-card::before {
     content: '';
@@ -465,12 +513,22 @@
     top: 0; left: 50%; transform: translateX(-50%);
     width: 1px; height: 100%;
     background: var(--border);
+    z-index: 2;
   }
 
   .ba-num {
     font-family: 'Cormorant Garamond', serif;
     font-size: 2rem;
-    color: #2a2a2a;
+    color: #ffffff;
+    text-shadow: 0 0 18px rgba(0,0,0,0.8);
+  }
+
+  .ba-caption {
+    color: #ffffff;
+    font-size: 0.86rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    max-width: 100%;
   }
 
   /* BOOKING */
@@ -1042,7 +1100,13 @@
         <a href="#booking" class="btn btn-outline" style="margin-top:0.5rem" data-i18n="about.scheduleCall">Schedule a Call</a>
       </div>
       <div class="why-image pop-out">
-        <span data-i18n="about.clinicPhoto">Clinic Photo</span>
+        <div class="clinic-slideshow" aria-label="Clinic photo slideshow">
+          <img class="clinic-slide active" src="Assets/clinic-photos/clinic-1.jpg" alt="Clinic lobby photo">
+          <img class="clinic-slide" src="Assets/clinic-photos/clinic-2.jpg" alt="Clinic reception photo">
+          <img class="clinic-slide" src="Assets/clinic-photos/clinic-3.jpg" alt="Clinic team photo">
+          <img class="clinic-slide" src="Assets/clinic-photos/clinic-4.jpg" alt="Clinic procedure room photo">
+          <img class="clinic-slide" src="Assets/clinic-photos/clinic-5.jpg" alt="Clinic lounge area photo">
+        </div>
       </div>
     </div>
   </div>
@@ -1072,19 +1136,28 @@
 <section id="results" style="padding-top:0;">
   <div class="container">
     <p class="section-label" data-i18n="results.sectionLabel">Gallery</p>
-    <h2 data-i18n="results.title">Before &amp; After Results</h2>
+    <h2 data-i18n="results.title">Patient Gallery</h2>
     <div class="ba-grid">
       <div class="ba-card pop-out">
-        <span class="ba-num">01</span>
-        <span data-i18n="results.beforeAfter">Before / After</span>
+        <img src="Assets/customer-photos/customer-01.png" alt="Customer gallery photo 01">
+        <div class="ba-card-overlay">
+          <span class="ba-num">01</span>
+          <span data-i18n="results.beforeAfter">Patient Photo</span>
+        </div>
       </div>
       <div class="ba-card pop-out">
-        <span class="ba-num">02</span>
-        <span data-i18n="results.beforeAfter">Before / After</span>
+        <img src="Assets/customer-photos/customer-02.png" alt="Customer gallery photo 02">
+        <div class="ba-card-overlay">
+          <span class="ba-num">02</span>
+          <span data-i18n="results.beforeAfter">Patient Photo</span>
+        </div>
       </div>
       <div class="ba-card pop-out">
-        <span class="ba-num">03</span>
-        <span data-i18n="results.beforeAfter">Before / After</span>
+        <img src="Assets/customer-photos/customer-03.png" alt="Customer gallery photo 03">
+        <div class="ba-card-overlay">
+          <span class="ba-num">03</span>
+          <span data-i18n="results.beforeAfter">Patient Photo</span>
+        </div>
       </div>
     </div>
   </div>
@@ -1224,8 +1297,8 @@ const translations = {
     },
     results: {
       sectionLabel: "Gallery",
-      title: "Before & After Results",
-      beforeAfter: "Before / After"
+      title: "Patient Gallery",
+      beforeAfter: "Patient Photo"
     },
     reviews: {
       sectionLabel: "Testimonials",
@@ -1310,8 +1383,8 @@ const translations = {
     },
     results: {
       sectionLabel: "المعرض",
-      title: "نتائج قبل وبعد",
-      beforeAfter: "قبل / بعد"
+      title: "معرض المرضى",
+      beforeAfter: "صورة مريض"
     },
     reviews: {
       sectionLabel: "آراء العملاء",
@@ -1396,8 +1469,8 @@ const translations = {
     },
     results: {
       sectionLabel: "Galerie",
-      title: "Résultats avant et après",
-      beforeAfter: "Avant / Après"
+      title: "Galerie des patients",
+      beforeAfter: "Photo du patient"
     },
     reviews: {
       sectionLabel: "Témoignages",
@@ -1482,8 +1555,8 @@ const translations = {
     },
     results: {
       sectionLabel: "Galeri",
-      title: "Önce ve Sonra Sonuçları",
-      beforeAfter: "Önce / Sonra"
+      title: "Hasta Galerisi",
+      beforeAfter: "Hasta Fotoğrafı"
     },
     reviews: {
       sectionLabel: "Yorumlar",
@@ -2324,6 +2397,16 @@ renderThemeOptions();
 initializeTheme();
 
 renderProcedureOptions();
+
+const clinicSlides = document.querySelectorAll('.clinic-slide');
+let clinicSlideIndex = 0;
+if (clinicSlides.length > 0) {
+  setInterval(() => {
+    clinicSlides[clinicSlideIndex].classList.remove('active');
+    clinicSlideIndex = (clinicSlideIndex + 1) % clinicSlides.length;
+    clinicSlides[clinicSlideIndex].classList.add('active');
+  }, 5200);
+}
 
 function validateForm() {
   const name = formFields[0].value.trim();

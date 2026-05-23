@@ -507,15 +507,6 @@
     z-index: 2;
   }
 
-  .ba-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 50%; transform: translateX(-50%);
-    width: 1px; height: 100%;
-    background: var(--border);
-    z-index: 2;
-  }
-
   .ba-num {
     font-family: 'Cormorant Garamond', serif;
     font-size: 2rem;
@@ -599,6 +590,12 @@
 
   .custom-dropdown-trigger:hover {
     border-color: rgba(0,123,255,0.5);
+  }
+
+  .dropdown-arrow {
+    flex-shrink: 0;
+    width: 12px;
+    height: 12px;
   }
 
   .nav-dropdown {
@@ -881,12 +878,28 @@
 
   .tech-item:hover { border-color: rgba(0,123,255,0.3); }
 
+  .tech-toggle {
+    appearance: none;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    width: 100%;
+    padding: 0;
+    text-align: center;
+    cursor: default;
+  }
+
   .tech-item h3 {
     font-family: 'Cormorant Garamond', serif;
     font-size: 1.5rem;
     font-weight: 600;
     color: var(--gold);
     margin-bottom: 1rem;
+  }
+
+  .tech-toggle .tech-arrow {
+    display: none;
   }
 
   .tech-item p {
@@ -1047,12 +1060,64 @@
     nav { padding: 1rem 1.25rem; }
     .why-grid { grid-template-columns: 1fr; gap: 2rem; }
     .ba-grid { grid-template-columns: 1fr; }
-    .stats-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+    .stats { padding: 2rem 1rem; }
+    .stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+    .stats-grid > div { min-width: 0; }
+    .stats-grid > div:nth-child(2) { display: none; }
+    .stat-num { font-size: 2.15rem; margin-bottom: 0.35rem; }
+    .stat-label { display: block; font-size: 0.72rem; line-height: 1.35; }
     .tech-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+    .tech-item {
+      padding: 0;
+      text-align: left;
+      overflow: hidden;
+    }
+    .tech-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 1.15rem 1.25rem;
+      text-align: left;
+      cursor: pointer;
+    }
+    .tech-item h3 {
+      font-size: 1.25rem;
+      margin-bottom: 0;
+    }
+    .tech-toggle .tech-arrow {
+      display: block;
+      flex: 0 0 auto;
+      color: var(--gold);
+      width: 1.1rem;
+      height: 1.1rem;
+      transition: transform 0.2s ease;
+    }
+    .tech-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.28s ease;
+    }
+    .tech-content p {
+      padding: 0 1.25rem 1.25rem;
+    }
+    .tech-item.is-open .tech-content {
+      max-height: 260px;
+    }
+    .tech-item.is-open .tech-toggle .tech-arrow {
+      transform: rotate(180deg);
+    }
     footer { flex-direction: column; gap: 0.5rem; text-align: center; }
-    .phone-input-wrapper { flex-direction: column; }
+    .phone-input-wrapper { flex-direction: row; }
+    .phone-input-wrapper .custom-dropdown {
+      flex: 0 0 110px;
+      width: 110px;
+      min-width: 110px;
+    }
     .custom-dropdown { width: 100%; max-width: none; }
-    .review-card { min-width: 280px; max-width: 280px; }
+    .reviews-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; scroll-snap-type: x mandatory; }
+    .reviews-track { animation: none; gap: 0; width: 100%; }
+    .review-card { flex: 0 0 100%; min-width: 100%; max-width: none; scroll-snap-align: start; }
     .instagram-item, .instagram-follow-btn { width: 240px; height: 240px; }
   }
 </style>
@@ -1143,16 +1208,37 @@
     <h2 data-i18n="tech.title">Advanced Hair Transplant Techniques</h2>
     <div class="tech-grid">
       <div class="tech-item pop-out">
-        <h3 data-i18n="tech.safir.title">Safir Technique</h3>
-        <p data-i18n="tech.safir.description">Utilizing the latest Sapphire FUE method for precise, minimally invasive hair follicle extraction, ensuring maximum graft survival and natural results.</p>
+        <h3>
+          <button class="tech-toggle" type="button" aria-expanded="false">
+            <span data-i18n="tech.safir.title">Safir Technique</span>
+            <svg class="tech-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </h3>
+        <div class="tech-content">
+          <p data-i18n="tech.safir.description">Utilizing the latest Sapphire FUE method for precise, minimally invasive hair follicle extraction, ensuring maximum graft survival and natural results.</p>
+        </div>
       </div>
       <div class="tech-item pop-out">
-        <h3 data-i18n="tech.team.title">Fully Professional Turkish Team</h3>
-        <p data-i18n="tech.team.description">Our expert Turkish medical professionals bring years of specialized experience in hair restoration, combining traditional techniques with modern innovations.</p>
+        <h3>
+          <button class="tech-toggle" type="button" aria-expanded="false">
+            <span data-i18n="tech.team.title">Fully Professional Turkish Team</span>
+            <svg class="tech-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </h3>
+        <div class="tech-content">
+          <p data-i18n="tech.team.description">Our expert Turkish medical professionals bring years of specialized experience in hair restoration, combining traditional techniques with modern innovations.</p>
+        </div>
       </div>
       <div class="tech-item pop-out">
-        <h3 data-i18n="tech.anesthesia.title">Painless Local Anesthesia</h3>
-        <p data-i18n="tech.anesthesia.description">Advanced sedation and local anesthesia techniques ensure a comfortable, pain-free procedure from start to finish, prioritizing patient comfort.</p>
+        <h3>
+          <button class="tech-toggle" type="button" aria-expanded="false">
+            <span data-i18n="tech.anesthesia.title">Painless Local Anesthesia</span>
+            <svg class="tech-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </h3>
+        <div class="tech-content">
+          <p data-i18n="tech.anesthesia.description">Advanced sedation and local anesthesia techniques ensure a comfortable, pain-free procedure from start to finish, prioritizing patient comfort.</p>
+        </div>
       </div>
     </div>
   </div>
@@ -1228,7 +1314,7 @@
           <div class="custom-dropdown" id="procedureDropdown">
             <button type="button" class="custom-dropdown-trigger" id="procedureDropdownToggle" aria-haspopup="listbox" aria-expanded="false">
               <span class="dropdown-value" data-i18n="form.procedurePlaceholder">Select an option</span>
-              <span class="dropdown-arrow">▾</span>
+              <svg class="dropdown-arrow" width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M3 5L6 8L9 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </button>
             <div class="custom-options" id="procedureOptions" role="listbox" tabindex="-1">
               <div class="options-list" id="procedureOptionsList"></div>
@@ -1243,7 +1329,7 @@
             <div class="custom-dropdown" id="countryDropdown">
               <button type="button" class="custom-dropdown-trigger" id="countryDropdownToggle" aria-haspopup="listbox" aria-expanded="false">
                 <span class="dropdown-value">🇲🇦 +212</span>
-                <span class="dropdown-arrow">▾</span>
+                <svg class="dropdown-arrow" width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M3 5L6 8L9 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
               </button>
               <div class="custom-options" id="countryOptions" role="listbox" tabindex="-1">
                 <div class="country-search">
@@ -2466,6 +2552,42 @@ initializeTheme();
 
 renderProcedureOptions();
 
+const techCards = document.querySelectorAll('.tech-item');
+const techAccordionMedia = window.matchMedia('(max-width: 768px)');
+
+function syncTechAccordions() {
+  techCards.forEach((card) => {
+    const toggle = card.querySelector('.tech-toggle');
+    if (!toggle) return;
+
+    if (techAccordionMedia.matches) {
+      toggle.setAttribute('aria-expanded', card.classList.contains('is-open') ? 'true' : 'false');
+    } else {
+      card.classList.remove('is-open');
+      toggle.setAttribute('aria-expanded', 'true');
+    }
+  });
+}
+
+techCards.forEach((card) => {
+  const toggle = card.querySelector('.tech-toggle');
+  if (!toggle) return;
+
+  toggle.addEventListener('click', () => {
+    if (!techAccordionMedia.matches) return;
+
+    const isOpen = card.classList.toggle('is-open');
+    toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+  });
+});
+
+if (techAccordionMedia.addEventListener) {
+  techAccordionMedia.addEventListener('change', syncTechAccordions);
+} else {
+  techAccordionMedia.addListener(syncTechAccordions);
+}
+syncTechAccordions();
+
 const clinicSlides = document.querySelectorAll('.clinic-slide');
 let clinicSlideIndex = 0;
 if (clinicSlides.length > 0) {
@@ -2848,8 +2970,9 @@ function renderReviews() {
   const track = document.getElementById('reviewsTrack');
   const lang = currentLanguage;
   
-  // Duplicate reviews for infinite scroll effect
-  const duplicatedReviews = [...reviewsData, ...reviewsData];
+  // Duplicate reviews for infinite scroll effect (desktop only)
+  const isDesktop = window.innerWidth > 768;
+  const duplicatedReviews = isDesktop ? [...reviewsData, ...reviewsData] : reviewsData;
   
   track.innerHTML = duplicatedReviews.map(review => {
     const isOriginalLang = review.originalLang === lang;
@@ -2876,13 +2999,15 @@ function renderReviews() {
 
 // INTERSECTION OBSERVER FOR POP-OUT ANIMATIONS
 function initPopOutObserver() {
+  const isDesktop = window.innerWidth > 768;
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry, index) => {
       if (entry.isIntersecting) {
-        // Stagger the animations
+        // Stagger the animations (skip stagger on mobile for snap-scroll)
+        const delay = isDesktop ? index * 100 : 0;
         setTimeout(() => {
           entry.target.classList.add('visible');
-        }, index * 100);
+        }, delay);
         observer.unobserve(entry.target);
       }
     });

@@ -911,14 +911,11 @@
   .reviews-scroll {
     overflow-x: hidden;
     overflow-y: hidden;
-    margin-top: 3rem;
+    margin-top: calc(3rem - 20px);
+    padding-top: 20px;
     position: relative;
     mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
     -webkit-mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
-  }
-
-  .reviews-scroll:hover .reviews-track {
-    animation-play-state: paused;
   }
 
   .reviews-track {
@@ -926,26 +923,11 @@
     gap: 1.5rem;
     padding: 0.5rem;
     width: max-content;
-    animation: scrollReviews 40s linear infinite;
-  }
-
-  @keyframes scrollReviews {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
-  }
-
-  @keyframes scrollReviewsRTL {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(50%); }
   }
 
   [dir="rtl"] .reviews-scroll {
     mask-image: linear-gradient(to left, transparent 0%, black 8%, black 92%, transparent 100%);
     -webkit-mask-image: linear-gradient(to left, transparent 0%, black 8%, black 92%, transparent 100%);
-  }
-
-  [dir="rtl"] .reviews-track {
-    animation: scrollReviewsRTL 40s linear infinite;
   }
 
   .review-card {
@@ -1460,6 +1442,9 @@ const translations = {
     footer: {
       copyright: "© 2026 Hair Istanbul. All rights reserved.",
       location: "Casablanca, Morocco"
+    },
+    whatsapp: {
+      message: "Hello! My name is {name}. I'm {age} years old, and I'm from {city}. I need {procedure}. My phone number is +{country}{phone}."
     }
   },
   ar: {
@@ -1467,8 +1452,8 @@ const translations = {
       bookNow: "احجز الآن"
     },
     hero: {
-      eyebrow: "فريق تركي، مقره المغرب.",
-      title: "زراعة الشعر المتميزة<br>في <em>المغرب</em>",
+      eyebrow: "زراعة الشعر في الدار لبيضاء",
+      title: "الخبرة التركية بين يديك في <em>المغرب</em>",
       subtitle: "فريق تركي محترف بالكامل يقدم نتائج عالمية المستوى لمرضانا.",
       getConsultation: "احصل على استشارة",
       learnMore: "اعرف المزيد"
@@ -1491,7 +1476,7 @@ const translations = {
       title: "تقنيات زراعة الشعر المتقدمة",
       safir: {
         title: "تقنية السفير",
-        description: "استخدام طريقة السفير الأحدث لاستخراج بصيلات الشعر الدقيقة والأقل تدخلاً جراحياً، مما يضمن بقاء الحويصلات الأقصى والنتائج الطبيعية."
+        description: "استخدام طريقة السفير الأحدث لاستخراج بصيلات الشعر الدقيقة والأقل تدخلاً جراحياً، مما يضمن سرعة في التشافي وعملية آمنة بنتائج طبيعية."
       },
       team: {
         title: "فريق تركي محترف بالكامل",
@@ -1551,6 +1536,9 @@ const translations = {
     footer: {
       copyright: "© 2026 هير إسطنبول. جميع الحقوق محفوظة.",
       location: "الدار البيضاء، المغرب"
+    },
+    whatsapp: {
+      message: "مرحبا! اسمي {name}. عمري {age} سنة، وأنا من {city}. أحتاج إلى {procedure}. رقم هاتفي هو +{country}{phone}."
     }
   },
   fr: {
@@ -1642,6 +1630,9 @@ const translations = {
     footer: {
       copyright: "© 2026 Hair Istanbul. Tous droits réservés.",
       location: "Casablanca, Maroc"
+    },
+    whatsapp: {
+      message: "Bonjour ! Je m'appelle {name}. J'ai {age} ans, je viens de {city}. J'ai besoin de {procedure}. Mon numéro est le +{country}{phone}."
     }
   },
   tr: {
@@ -1733,6 +1724,9 @@ const translations = {
     footer: {
       copyright: "© 2026 Hair Istanbul. Tüm hakları saklıdır.",
       location: "Kazablanka, Fas"
+    },
+    whatsapp: {
+      message: "Merhaba! Benim adım {name}. {age} yaşındayım, {city} şehrindenim. {procedure} ihtiyacım var. Telefon numaram +{country}{phone}."
     }
   }
 };
@@ -2641,8 +2635,9 @@ function isValidProcedure(value) {
   return procedureLists.en.some((procedure) => procedure.value === value);
 }
 
-function getArabicProcedureLabel(value) {
-  return procedureLists.ar.find((procedure) => procedure.value === value)?.label || value;
+function getProcedureLabel(value) {
+  const list = procedureLists[currentLanguage] || procedureLists.en;
+  return list.find((procedure) => procedure.value === value)?.label || value;
 }
 
 function isValidPhone(phone, countryCode) {
@@ -2764,10 +2759,17 @@ function openWhatsApp() {
   const name = normalizeSpaces(formFields[0].value);
   const age = formFields[1].value.trim();
   const city = normalizeSpaces(formFields[2].value);
-  const procedure = getArabicProcedureLabel(formFields[3].value);
+  const procedure = getProcedureLabel(formFields[3].value);
   const country = formFields[5].value;
   const phone = phoneDigits(formFields[4].value);
-  const message = `مرحبا! اسمي ${name}. عمري ${age} سنة، وأنا من ${city}. أحتاج إلى ${procedure}. رقم هاتفي هو +${country}${phone}.`;
+  const template = getTranslation('whatsapp.message');
+  const message = template
+    .replace('{name}', name)
+    .replace('{age}', age)
+    .replace('{city}', city)
+    .replace('{procedure}', procedure)
+    .replace('{country}', country)
+    .replace('{phone}', phone);
   window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`, '_blank');
 }
 
@@ -3024,6 +3026,48 @@ function initPopOutObserver() {
 // INITIALIZE
 renderReviews();
 initPopOutObserver();
+
+// Smooth infinite scroll for testimonials (desktop only)
+(function() {
+  const track = document.querySelector('.reviews-track');
+  if (!track || window.innerWidth <= 768) return;
+
+  let position = 0;
+  let speed = 1.2;
+  let isHovering = false;
+  const maxSpeed = 1.2;
+  const halfTrack = () => track.scrollWidth / 2;
+  const isRTL = () => document.documentElement.dir === 'rtl';
+
+  function loop() {
+    if (isHovering) {
+      // Decelerate smoothly
+      speed *= 0.96;
+      if (speed < 0.005) speed = 0;
+    } else if (speed < maxSpeed) {
+      // Accelerate back
+      speed += (maxSpeed - speed) * 0.035;
+      if (speed > maxSpeed) speed = maxSpeed;
+    }
+
+    position += isRTL() ? speed : -speed;
+
+    // Seamless loop: reset when one full set has passed
+    const halfW = halfTrack();
+    if (Math.abs(position) >= halfW) position -= Math.sign(position) * halfW;
+
+    track.style.transform = 'translateX(' + position + 'px)';
+    requestAnimationFrame(loop);
+  }
+
+  requestAnimationFrame(loop);
+
+  const scrollArea = document.querySelector('.reviews-scroll');
+  if (scrollArea) {
+    scrollArea.addEventListener('mouseenter', () => { isHovering = true; });
+    scrollArea.addEventListener('mouseleave', () => { isHovering = false; });
+  }
+})();
 
 // Re-render reviews when language changes
 const originalSetLanguage = setLanguage;

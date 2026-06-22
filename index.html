@@ -1037,6 +1037,128 @@
     color: var(--gold);
   }
 
+  /* ── VIDEO SECTION ── */
+  .video-wrapper {
+    margin-top: 3rem;
+  }
+
+  .video-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem;
+  }
+
+  .video-card {
+    position: relative;
+    border-radius: 4px;
+    overflow: hidden;
+    cursor: pointer;
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    transition: border-color 0.4s ease, transform 0.4s cubic-bezier(0.33, 0.66, 0.66, 1), box-shadow 0.4s ease;
+    aspect-ratio: 9 / 16;
+    max-height: 560px;
+  }
+
+  .video-card:hover {
+    border-color: rgba(0,123,255,0.35);
+    transform: translateY(-3px);
+    box-shadow: 0 16px 48px rgba(0,123,255,0.1);
+  }
+
+  .video-card video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    filter: blur(18px) brightness(0.72);
+    transition: filter 0.5s cubic-bezier(0.33, 0.66, 0.66, 1), transform 0.5s cubic-bezier(0.33, 0.66, 0.66, 1);
+    transform: scale(1.1);
+    will-change: filter;
+  }
+
+  .video-card.playing video {
+    filter: blur(0) brightness(1);
+    transform: scale(1);
+  }
+
+  .video-card-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 1.5rem 1.25rem;
+    background: linear-gradient(180deg, rgba(0,0,0,0.05) 20%, rgba(0,0,0,0.75) 100%);
+    transition: opacity 0.4s ease;
+    z-index: 2;
+  }
+
+  .video-card.playing .video-card-overlay,
+  .video-card.playing:hover .video-card-overlay {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .video-center-play {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .video-play-btn {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: rgba(0, 123, 255, 0.92);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.35s cubic-bezier(0.33, 0.66, 0.66, 1), background 0.35s ease, box-shadow 0.35s ease;
+    flex-shrink: 0;
+    box-shadow: 0 4px 24px rgba(0,123,255,0.35);
+    position: relative;
+  }
+
+  .video-card:hover .video-play-btn {
+    transform: scale(1.08);
+    background: var(--gold-light);
+    box-shadow: 0 6px 32px rgba(0,123,255,0.5);
+  }
+
+  .video-play-btn svg {
+    width: 22px;
+    height: 22px;
+    fill: white;
+    margin-left: 3px;
+  }
+
+  .video-card-bottom {
+    position: relative;
+    z-index: 1;
+  }
+
+  .video-card-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #ffffff;
+    text-shadow: 0 2px 20px rgba(0,0,0,0.7);
+    line-height: 1.3;
+    margin-bottom: 0.15rem;
+  }
+
+  .video-card-desc {
+    font-size: 0.78rem;
+    color: rgba(255,255,255,0.7);
+    text-shadow: 0 1px 12px rgba(0,0,0,0.5);
+    line-height: 1.5;
+  }
+
   /* RESPONSIVE */
   @media (max-width: 768px) {
     nav { padding: 1rem 1.25rem; }
@@ -1101,6 +1223,11 @@
     .reviews-track { animation: none; gap: 0; width: 100%; }
     .review-card { flex: 0 0 100%; min-width: 100%; max-width: none; scroll-snap-align: start; }
     .instagram-item, .instagram-follow-btn { width: 240px; height: 240px; }
+    .video-grid { grid-template-columns: 1fr; }
+    .video-card-title { font-size: 1rem; }
+    .video-card-desc { font-size: 0.75rem; }
+    .video-play-btn { width: 48px; height: 48px; }
+    .video-play-btn svg { width: 20px; height: 20px; }
   }
 </style>
 </head>
@@ -1220,6 +1347,60 @@
         </h3>
         <div class="tech-content">
           <p data-i18n="tech.anesthesia.description">Advanced sedation and local anesthesia techniques ensure a comfortable, pain-free procedure from start to finish, prioritizing patient comfort.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="videos">
+  <div class="container" style="text-align:center;">
+    <p class="section-label" data-i18n="videos.sectionLabel">Watch</p>
+    <h2 data-i18n="videos.title">See Hair Istanbul in Action</h2>
+    <p style="color:var(--muted); max-width:480px; margin:0 auto 0;" data-i18n="videos.subtitle">Watch our videos to learn more about our approach and what makes us different.</p>
+      <div class="video-wrapper" style="text-align:left;">
+      <div class="video-grid">
+        <div class="video-card pop-out" data-video="0">
+          <video preload="metadata" muted playsinline src="Assets/videos/WhatsApp Video 2.mp4"></video>
+          <div class="video-card-overlay">
+            <div class="video-center-play">
+              <div class="video-play-btn">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><polygon points="7,4 19,12 7,20" fill="white"/></svg>
+              </div>
+            </div>
+            <div class="video-card-bottom">
+              <span class="video-card-title" data-i18n="videos.card1">What is Hair Istanbul</span>
+              <p class="video-card-desc" data-i18n="videos.desc1">Meet our Turkish medical team and discover our clinic in Morocco</p>
+            </div>
+          </div>
+        </div>
+        <div class="video-card pop-out" data-video="1">
+          <video preload="metadata" muted playsinline src="Assets/videos/WhatsApp Video 2026-06-20 at 23.16.58.mp4"></video>
+          <div class="video-card-overlay">
+            <div class="video-center-play">
+              <div class="video-play-btn">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><polygon points="7,4 19,12 7,20" fill="white"/></svg>
+              </div>
+            </div>
+            <div class="video-card-bottom">
+              <span class="video-card-title" data-i18n="videos.card2">The Hair Transplant Process</span>
+              <p class="video-card-desc" data-i18n="videos.desc2">Step-by-step from consultation to full recovery</p>
+            </div>
+          </div>
+        </div>
+        <div class="video-card pop-out" data-video="2">
+          <video preload="metadata" muted playsinline src="Assets/videos/WhatsApp Video 3.mp4"></video>
+          <div class="video-card-overlay">
+            <div class="video-center-play">
+              <div class="video-play-btn">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><polygon points="7,4 19,12 7,20" fill="white"/></svg>
+              </div>
+            </div>
+            <div class="video-card-bottom">
+              <span class="video-card-title" data-i18n="videos.card3">Your Journey With Us</span>
+              <p class="video-card-desc" data-i18n="videos.desc3">See real results and hear from our team</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -1406,6 +1587,20 @@ const translations = {
       title: "What Our Patients Say",
       translatedFrom: "Translated from"
     },
+    videos: {
+      sectionLabel: "Watch",
+      title: "See Hair Istanbul in Action",
+      subtitle: "Watch our videos to learn more about our approach and what makes us different.",
+      card1: "What is Hair Istanbul",
+      card2: "The Hair Transplant Process",
+      card3: "Your Journey With Us",
+      category1: "About Us",
+      category2: "Procedure",
+      category3: "Patient Story",
+      desc1: "Meet our Turkish medical team and discover our clinic in Morocco",
+      desc2: "Step-by-step from consultation to full recovery",
+      desc3: "See real results and hear from our team"
+    },
     instagram: {
       sectionLabel: "Follow Us",
       title: "@hair_instanbul",
@@ -1499,6 +1694,20 @@ const translations = {
       sectionLabel: "آراء العملاء",
       title: "ماذا يقول مرضانا",
       translatedFrom: "مترجم من"
+    },
+    videos: {
+      sectionLabel: "شاهد",
+      title: "شاهد هير إسطنبول في العمل",
+      subtitle: "شاهد فيديوهاتنا لتعرف المزيد عن نهجنا وما يميزنا.",
+      card1: "ما هي هير إسطنبول",
+      card2: "عملية زراعة الشعر",
+      card3: "رحلتك معنا",
+      category1: "عن العيادة",
+      category2: "الإجراء",
+      category3: "قصة مريض",
+      desc1: "تعرف على فريقنا الطبي التركي واكتشف عيادتنا في المغرب",
+      desc2: "خطوة بخطوة من الاستشارة إلى التعافي الكامل",
+      desc3: "شاهد النتائج الحقيقية واستمع إلى فريقنا"
     },
     instagram: {
       sectionLabel: "تابعنا",
@@ -1594,6 +1803,20 @@ const translations = {
       title: "Ce que disent nos patients",
       translatedFrom: "Traduit de"
     },
+    videos: {
+      sectionLabel: "Voir",
+      title: "Voir Hair Istanbul en action",
+      subtitle: "Regardez nos vidéos pour en savoir plus sur notre approche et ce qui nous rend différents.",
+      card1: "Qu'est-ce que Hair Istanbul",
+      card2: "Le processus de greffe capillaire",
+      card3: "Votre parcours avec nous",
+      category1: "À Propos",
+      category2: "Procédure",
+      category3: "Témoignage",
+      desc1: "Rencontrez notre équipe médicale turque et découvrez notre clinique au Maroc",
+      desc2: "Étape par étape, de la consultation à la guérison complète",
+      desc3: "Voyez les résultats réels et écoutez notre équipe"
+    },
     instagram: {
       sectionLabel: "Suivez-nous",
       title: "@hair_instanbul",
@@ -1687,6 +1910,20 @@ const translations = {
       sectionLabel: "Yorumlar",
       title: "Hastalarımız Ne Diyor",
       translatedFrom: "Şu dilden çevrilmiştir"
+    },
+    videos: {
+      sectionLabel: "İzle",
+      title: "Hair Istanbul'u Aksiyonda Görün",
+      subtitle: "Yaklaşımımız ve bizi farklı kılan şeyler hakkında daha fazla bilgi edinmek için videolarımızı izleyin.",
+      card1: "Hair Istanbul Nedir",
+      card2: "Saç Ekimi Süreci",
+      card3: "Bizimle Yolculuğunuz",
+      category1: "Hakkımızda",
+      category2: "Prosedür",
+      category3: "Hasta Hikayesi",
+      desc1: "Türk tıbbi ekibimizle tanışın ve Fas'taki kliniğimizi keşfedin",
+      desc2: "Danışmanlıktan tam iyileşmeye adım adım",
+      desc3: "Gerçek sonuçları görün ve ekibimizden duyun"
     },
     instagram: {
       sectionLabel: "Bizi Takip Edin",
@@ -3139,7 +3376,32 @@ openWhatsApp = async function() {
 
   originalOpenWhatsApp();
 };
+
+// Video inline playback — blur/focus via CSS .playing class
+document.querySelectorAll('.video-card').forEach(card => {
+  const video = card.querySelector('video');
+
+  card.addEventListener('click', () => {
+    if (video.paused) {
+      // Pause all other playing cards
+      document.querySelectorAll('.video-card.playing').forEach(c => {
+        const v = c.querySelector('video');
+        if (v !== video) { v.pause(); c.classList.remove('playing'); }
+      });
+      video.muted = false;
+      video.play().then(() => card.classList.add('playing')).catch(() => {});
+    } else {
+      video.pause();
+      card.classList.remove('playing');
+    }
+  });
+
+  video.addEventListener('pause', () => card.classList.remove('playing'));
+  video.addEventListener('ended', () => card.classList.remove('playing'));
+});
 </script>
+
+</body>
 
 </body>
 </html>
